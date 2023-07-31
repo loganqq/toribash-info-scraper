@@ -7,6 +7,8 @@ import requests
 
 from bs4 import BeautifulSoup
 
+from tb import Player
+
 from dotenv import load_dotenv
 load_dotenv('N:\\tb-duel-scrape\\.env')
 
@@ -24,39 +26,6 @@ parser.add_argument(
     type=str
 )
 namespace = parser.parse_args()
-
-SESSION = requests.session()
-
-login_url = 'https://forum.toribash.com/tori_trans_hist.php'
-login_data = dict(
-        username='wizard',
-        password='',
-        securitytoken="guest",
-        vb_login_md5password=hashlib.md5(os.getenv('SECRET').encode('utf-8')).hexdigest(),
-        vb_login_md5password_utf=hashlib.md5(os.getenv('SECRET').encode('utf-8')).hexdigest(),
-        submit="Login"
-    )
-
-SESSION.post(login_url, data=login_data)
-
-
-def tableDataText(table):
-    """Parses a html segment started with tag <table> followed 
-    by multiple <tr> (table rows) and inner <td> (table data) tags. 
-    It returns a list of rows with inner columns. 
-    Accepts only one <th> (table header/data) in the first row.
-    """
-    def rowgetDataText(tr, coltag='td'): # td (data) or th (header)       
-        return [td.get_text(strip=True) for td in tr.find_all(coltag)]  
-    rows = []
-    trs = table.find_all('tr')
-    headerow = rowgetDataText(trs[0], 'th')
-    if headerow: # if there is a header row include first
-        rows.append(headerow)
-        trs = trs[1:]
-    for tr in trs: # for every table row
-        rows.append(rowgetDataText(tr, 'td') ) # data row       
-    return rows
 
 
 def summer_lottery(player):
@@ -142,9 +111,7 @@ def get_total_duel_profit(player):
     # Because duel amount is shown as double (user's tc wagered + opponent's tc wagered) we divide total profit by 2
     profit = profit / 2
 
-    print(f"Profit: {profit}TC")
-    print(f"Total duels played: {num_duels}")
-    print(f"Total TC volume: {total_volume}TC")
+
 
 
 def get_total_bets_profit(player):
@@ -201,15 +168,18 @@ def get_total_bets_profit(player):
 
 
 if __name__ == '__main__':
+    player = Player(namespace.player)
+    player.auth()
+
     start = time.time()
 
-    print(f'Getting {namespace.action} information for {namespace.player}')
+    print(f'Getting {namespace.action} information for {player.username}')
 
     match namespace.action:
         case 'bet':
             get_total_bets_profit(namespace.player)
         case 'duel':
-            get_total_duel_profit(namespace.player)
+            player.get_duel_profit()
         case 'summer-2023':
             summer_lottery(namespace.player)
         case _:
