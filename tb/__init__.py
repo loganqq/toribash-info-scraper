@@ -163,21 +163,19 @@ class Player:
 
 
 def update_json(player: Player):
-    with open('N:\\tb-duel-scrape\\player_info.json', 'r') as file:
+    with open('N:\\tb-duel-scrape\\player_info.json', 'r+') as file:
         data = json.load(file)
-
-    if player.username in data:
-        for key in vars(player):
-            if namespace.action in key:
-                data[player.username][key] = vars(player).get(key)
-
-    else:
-        data = {
-            player.username: {}
-        }
     
-    with open('player_info.json', 'w') as file:
+        if player.username not in data:
+            data[player.username] = {}
+
+        for key, value in vars(player).items():
+            if key != 'username' and data[player.username].get(key) != value:
+                data[player.username] = value
+        
+        file.seek(0)
         json.dump(data, file)
+        file.truncate()
 
 
 def get_last_page(player: Player, session: requests.Session) -> int:
