@@ -93,11 +93,11 @@ class Player:
         # Because duel amount is shown as double (user's tc wagered + opponent's tc wagered) we divide total profit by 2
         self.duel_profit = self.duel_profit / 2
 
-        update_json(self)
+        # update_json(self)
 
-        print(f"Profit: {self.duel_profit} TC")
-        print(f"Total duels played: {self.num_duels}")
-        print(f"Total TC volume: {self.gross_tc_dueled} TC")
+        # print(f"Profit: {self.duel_profit} TC")
+        # print(f"Total duels played: {self.num_duels}")
+        # print(f"Total TC volume: {self.gross_tc_dueled} TC")
 
     
     def get_bet_profit(self):
@@ -130,11 +130,11 @@ class Player:
 
                         self.bet_profit += amount
                     
-        update_json(self)
+        # update_json(self)
 
-        print(f"Profit: {self.bet_profit}TC")
-        print(f"Total bets placed: {self.num_bets}")
-        print(f"Total TC bet: {self.gross_tc_bet}TC")
+        # print(f"Profit: {self.bet_profit}TC")
+        # print(f"Total bets placed: {self.num_bets}")
+        # print(f"Total TC bet: {self.gross_tc_bet}TC")
     
 
     def get_summer_lottery_info(self):
@@ -157,7 +157,7 @@ class Player:
                     if element in summer_categories:
                         self.total_tc_spent_on_summer_2023_lottery += int(entry[2].replace(',', ''))
         
-        update_json(self)
+        # update_json(self)
         
         print(f"Total TC spent in Summer Lottery 2023: {self.total_tc_spent_on_summer_2023_lottery}TC")
 
